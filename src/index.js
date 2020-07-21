@@ -11,19 +11,12 @@ app.innerHTML = `
     </ul>
 `;
 
-const list = document.querySelector('#list');
+const listItem = document.querySelector('#list li');
 
-// querySelectorAll: NodeList
-const queryChildren = list.querySelectorAll('li');
-console.log(queryChildren.length);
+// Any DOM nodes
+console.log(listItem.nextSibling);
 
-// .children : HTMLCollection
-// best way
-console.log(list.children);
+// Any Element Nodes
+console.log(listItem.nextElementSibling);
 
-// .childNodes: NodeList
-console.log(list.childNodes);
-
-// first/last
-console.log(list.firstChild, list.firstElementChild);
-console.log(list.lastChild, list.lastElementChild);
+console.log(listItem.previousElementSibling);
