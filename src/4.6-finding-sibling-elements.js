@@ -13,12 +13,9 @@ app.innerHTML = `
 
 const listItem = document.querySelector('#list li');
 
-
 // Any DOM nodes
 console.log(listItem.nextSibling);
 
 // Any Element Nodes
 console.log(listItem.nextElementSibling);
-
-// previous element sibling
 console.log(listItem.previousElementSibling);
