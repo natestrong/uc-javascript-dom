@@ -5,14 +5,17 @@ app.innerHTML = `
     <h1>JavaScript DOM</h1>
 `;
 
-console.log(document);
-console.dir(document);
+function createInputElement({label, type = 'text'}) {
+    const labelEl = document.createElement('label');
+    const inputEl = document.createElement('input');
 
-console.log(document.documentElement);
-console.dir(document.documentElement);
+    inputEl.type = type;
+    labelEl.innerText = label;
+    labelEl.append(inputEl);
 
-console.log('------');
-console.dir(document.head);
-console.dir(document.body);
+    return labelEl;
+}
 
-console.log('------');
+const inputFromDOM = createInputElement({label: 'Name'});
+console.log(inputFromDOM);
+app.append(inputFromDOM);
