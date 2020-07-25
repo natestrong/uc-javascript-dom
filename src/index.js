@@ -21,7 +21,7 @@ app.innerHTML = `
 `;
 
 // state
-let todos = [];
+let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
 // selectors
 const root = document.querySelector('.todos');
@@ -32,6 +32,10 @@ const form = document.forms.todos;
 const input = form.elements.todo;
 
 // functions
+function saveToStorage(todos) {
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
 function renderTodos(todos) {
     let todoString = '';
     todos.forEach((todo, index) => {
@@ -60,6 +64,7 @@ function addTodo(event) {
         }
     ];
     renderTodos(todos);
+    saveToStorage(todos);
     input.value = '';
 }
 
@@ -76,6 +81,42 @@ function updateTodo(event) {
         return todo;
     });
     renderTodos(todos);
+    saveToStorage(todos);
+}
+
+function editTodo(event) {
+    if (event.target.nodeName.toLowerCase() !== 'span') {
+        return;
+    }
+    const id = parseInt(event.target.parentNode.getAttribute('data-id'));
+    const todoLabel = todos[id].label;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = todoLabel;
+    event.target.style.display = 'none';
+    event.target.parentNode.append(input);
+    input.addEventListener('change', event => {
+        event.stopPropagation();
+        if (input.value !== todoLabel) {
+            const label = input.value;
+            todos = todos.map((todo, index) => {
+                if (index === id) {
+                    return {
+                        ...todo,
+                        label
+                    };
+                }
+                return todo;
+            });
+            renderTodos(todos);
+            saveToStorage(todos);
+        }
+        // clean up
+        event.target.style.display = '';
+        input.remove();
+    });
+    input.focus();
 }
 
 function deleteTodo(event) {
@@ -87,6 +128,7 @@ function deleteTodo(event) {
     if (window.confirm(`Delete ${label}?`)) {
         todos = todos.filter((todo, index) => index !== id);
         renderTodos(todos);
+        saveToStorage(todos);
     }
 }
 
@@ -98,15 +140,19 @@ function clearCompleteTodos() {
     if (window.confirm(`Delete ${count} todos?`)) {
         todos = todos.filter(todo => !todo.complete);
         renderTodos(todos);
+        saveToStorage(todos);
     }
 }
 
 // init
 function init() {
+    renderTodos(todos);
     // Add Todo
     form.addEventListener('submit', addTodo);
     // update todo
     list.addEventListener('change', updateTodo);
+    // edit todo
+    list.addEventListener('dblclick', editTodo);
     // delete todo
     list.addEventListener('click', deleteTodo);
     // complete all todos
