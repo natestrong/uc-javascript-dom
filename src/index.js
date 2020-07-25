@@ -19,3 +19,67 @@ app.innerHTML = `
         <ul class="todos-list"></ul>
     </div>
 `;
+
+// state
+let todos = [];
+
+// selectors
+const root = document.querySelector('.todos');
+const list = root.querySelector('.todos-list');
+const form = document.forms.todos;
+const input = form.elements.todo;
+
+// functions
+function renderTodos(todos) {
+    let todoString = '';
+    todos.forEach((todo, index) => {
+        todoString += `
+        <li data-id="${index}"${todo.complete ? ' class = "todos-complete"' : ''}>
+            <input type="checkbox"${todo.complete ? ' checked' : ''}>
+            <span>${todo.label}</span>
+            <button type="button"></button>
+        </li>
+        `;
+    });
+    list.innerHTML = todoString;
+}
+
+function addTodo(event) {
+    event.preventDefault();
+    const label = input.value.trim();
+    const complete = false;
+    todos = [
+        ...todos,
+        {
+            label,
+            complete
+        }
+    ];
+    renderTodos(todos);
+    input.value = '';
+}
+
+function updateTodo(event) {
+    const id = parseInt(event.target.parentNode.getAttribute('data-id'));
+    const complete = event.target.checked;
+    todos = todos.map((todo, index) => {
+        if (index === id) {
+            return {
+                ...todo,
+                complete
+            };
+        }
+        return todo;
+    });
+    renderTodos(todos);
+}
+
+// init
+function init() {
+    // Add Todo
+    form.addEventListener('submit', addTodo);
+    // update todo
+    list.addEventListener('change', updateTodo);
+}
+
+init();
