@@ -76,12 +76,26 @@ function updateTodo(event) {
     renderTodos(todos);
 }
 
+function deleteTodo(event) {
+    if (event.target.nodeName.toLowerCase() !== 'button') {
+        return;
+    }
+    const id = parseInt(event.target.parentNode.getAttribute('data-id'));
+    const label = event.target.previousElementSibling.innerText;
+    if (window.confirm(`Delete ${label}?`)) {
+        todos = todos.filter((todo, index) => index !== id);
+        renderTodos(todos);
+    }
+}
+
 // init
 function init() {
     // Add Todo
     form.addEventListener('submit', addTodo);
     // update todo
     list.addEventListener('change', updateTodo);
+    // delete todo
+    list.addEventListener('click', deleteTodo);
 }
 
 init();
